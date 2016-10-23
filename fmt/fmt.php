@@ -310,10 +310,13 @@ class fmt
 		out::lf();
 
 		/*
-		 * Add newline after the body
+		 * Add newline after the body unless another '}' follows
 		 */
 		self::subformat($s, '{', '}');
-		out::lf();
+		$t = $s->peek();
+		if(!$t || $t[0] != '}') {
+			out::lf();
+		}
 	}
 
 	private static function fswitch(toks $s)
