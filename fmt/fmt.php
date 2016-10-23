@@ -84,7 +84,9 @@ class fmt
 		{
 			case '}':
 				out::$indent--;
-				break;
+				out::str('}');
+				out::lf();
+				return;
 			case T_AS:
 			case T_INSTANCEOF:
 				out::str(' ');
@@ -113,9 +115,6 @@ class fmt
 			case '{':
 				out::lf();
 				out::$indent++;
-				break;
-			case '}':
-				out::lf();
 				break;
 			case T_RETURN:
 			case T_BREAK:
