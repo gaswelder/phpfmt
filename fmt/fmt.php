@@ -74,7 +74,7 @@ class fmt
 			'=>',
 			'||', '&&'
 		);
-		
+
 		if(in_array($tok[1], $ops)) {
 			out::str(' '.$tok[1].' ');
 			return;
@@ -280,11 +280,11 @@ class fmt
 		}
 		out::str(' ');
 	}
-	
+
 	private static function ffor(toks $s)
 	{
 		out::str('for ');
-		
+
 		$a = self::read_contents($s, '(', ')');
 		foreach($a as $t) {
 			switch($t[0]) {
