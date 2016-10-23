@@ -33,6 +33,9 @@ class fmt
 				case T_FOR:
 					self::ffor($s);
 					break;
+				case T_SWITCH:
+					self::fswitch($s);
+					break;
 				case T_ARRAY:
 					self::farr($s);
 					break;
@@ -309,6 +312,36 @@ class fmt
 		 */
 		self::subformat($s, '{', '}');
 		out::lf();
+	}
+
+	private static function fswitch(toks $s)
+	{
+		out::str('switch ');
+		self::subformat($s, '(', ')');
+		out::str(' ');
+
+		$a = self::read_contents($s, '{', '}');
+		self::out(array_shift($a), $s);
+
+		$case = false;
+		foreach($a as $t)
+		{
+			if($t[0] == T_CASE) {
+				$case = true;
+				out::$indent--;
+				out::str('case ');
+				continue;
+			}
+			if($case && $t[0] == ':') {
+				$case = false;
+				out::str(':');
+				out::lf();
+				out::$indent++;
+				continue;
+			}
+
+			self::out($t, $s);
+		}
 	}
 }
 
