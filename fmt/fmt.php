@@ -17,7 +17,8 @@ class fmt
 			if(!$t || $t[0] != $begin) return;
 		}
 
-		self::out($s->get());
+		$t = $s->get();
+		self::out($t, $s);
 
 		$level = 1;
 		while($t = $s->get())
@@ -41,16 +42,8 @@ class fmt
 				case T_CLASS:
 					self::fclass($s);
 					break;
-				case T_RETURN:
-				case T_BREAK:
-					out::str($t[1]);
-					$t = $s->peek();
-					if($t && $t[0] != ';') {
-						out::str(' ');
-					}
-					break;
 				default:
-					self::out($t);
+					self::out($t, $s);
 			}
 
 			if(!$begin) continue;
@@ -68,7 +61,7 @@ class fmt
 		}
 	}
 
-	private static function out($tok)
+	private static function out($tok, toks $s)
 	{
 		$ops = array(
 			'=', '==', '===', '!=', '!==',
@@ -120,6 +113,13 @@ class fmt
 				break;
 			case '}':
 				out::lf();
+				break;
+			case T_RETURN:
+			case T_BREAK:
+				$t = $s->peek();
+				if($t && $t[0] != ';') {
+					out::str(' ');
+				}
 				break;
 		}
 
@@ -216,7 +216,7 @@ class fmt
 
 		if($len < 50) {
 			foreach($contents as $t) {
-				self::out($t);
+				self::out($t, $s);
 			}
 			return;
 		}
@@ -237,7 +237,7 @@ class fmt
 				out::lf();
 			}
 			else {
-				self::out($t);
+				self::out($t, $s);
 			}
 		}
 
@@ -254,7 +254,7 @@ class fmt
 				$s->unget($t);
 				break;
 			}
-			self::out($t);
+			self::out($t, $s);
 		}
 	}
 
@@ -273,7 +273,7 @@ class fmt
 		 */
 		$a = self::read_contents($s, '(', ')');
 		foreach($a as $t) {
-			self::out($t);
+			self::out($t, $s);
 		}
 		out::str(' ');
 	}
@@ -289,7 +289,7 @@ class fmt
 					out::str('; ');
 					break;
 				default:
-					self::out($t);
+					self::out($t, $s);
 			}
 		}
 		out::str(' ');
