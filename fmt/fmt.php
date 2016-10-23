@@ -300,6 +300,9 @@ class fmt
 
 	private static function ffunc(toks $s)
 	{
+		if(out::emptyline()) {
+			out::lf();
+		}
 		out::str('function ');
 		/*
 		 * Put opening brace on new line
