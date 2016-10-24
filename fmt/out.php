@@ -16,7 +16,23 @@ class out
 		return self::$emptyline;
 	}
 
-	static function lf()
+	/*
+	 * Finish current line, if it's not empty.
+	 */
+	static function nl()
+	{
+		if(self::$emptyline) {
+			return;
+		}
+		echo "\n";
+		self::$emptyline = true;
+	}
+
+	/*
+	 * Separate previous output by an empty line.
+	 * Doesn't do anything if there is an empty line already.
+	 */
+	static function vskip()
 	{
 		/*
 		 * If we have already an empty line above, don't add another
@@ -24,14 +40,8 @@ class out
 		 */
 		if(self::$emptylines > 0) return;
 
-		/*
-		 * If current line is empty, it becomes an empty line above.
-		 */
-		if(self::$emptyline) {
-			self::$emptylines++;
-		}
-
 		echo "\n";
+		self::$emptylines++;
 		self::$emptyline = true;
 	}
 

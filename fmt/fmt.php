@@ -85,7 +85,7 @@ class fmt
 			case '}':
 				out::$indent--;
 				out::str('}');
-				out::lf();
+				out::nl();
 				return;
 			case T_AS:
 			case T_INSTANCEOF:
@@ -98,7 +98,7 @@ class fmt
 
 		if(out::emptyline()) {
 			if(substr_count($tok['lspace'], "\n") > 1) {
-				out::lf();
+				out::vskip();
 			}
 		}
 
@@ -107,13 +107,13 @@ class fmt
 		switch($tok[0])
 		{
 			case T_COMMENT:
-				out::lf();
+				out::nl();
 				break;
 			case ';':
-				out::lf();
+				out::nl();
 				break;
 			case '{':
-				out::lf();
+				out::nl();
 				out::$indent++;
 				break;
 			case T_RETURN:
@@ -227,7 +227,7 @@ class fmt
 		$t = array_shift($contents);
 		assert($t[0] == '(');
 		out::str('(');
-		out::lf();
+		out::nl();
 		out::$indent++;
 
 		$n = count($contents);
@@ -236,7 +236,7 @@ class fmt
 			$n--;
 			if($t[0] == ',') {
 				out::str(',');
-				out::lf();
+				out::nl();
 			}
 			else {
 				self::out($t, $s);
@@ -244,7 +244,7 @@ class fmt
 		}
 
 		assert($contents[0][0] == ')');
-		out::lf();
+		out::nl();
 		out::$indent--;
 		out::str(')');
 	}
@@ -264,7 +264,7 @@ class fmt
 	{
 		out::str('class ');
 		self::out_until($s, '{');
-		out::lf();
+		out::nl();
 	}
 
 	private static function fcontrol($t, toks $s)
@@ -299,15 +299,12 @@ class fmt
 
 	private static function ffunc(toks $s)
 	{
-		if(out::emptyline()) {
-			out::lf();
-		}
 		out::str('function ');
 		/*
 		 * Put opening brace on new line
 		 */
 		self::out_until($s, '{');
-		out::lf();
+		out::nl();
 
 		/*
 		 * Add newline after the body unless another '}' follows
@@ -315,7 +312,7 @@ class fmt
 		self::subformat($s, '{', '}');
 		$t = $s->peek();
 		if(!$t || $t[0] != '}') {
-			out::lf();
+			out::vskip();
 		}
 	}
 
@@ -340,7 +337,7 @@ class fmt
 			if($case && $t[0] == ':') {
 				$case = false;
 				out::str(':');
-				out::lf();
+				out::nl();
 				out::$indent++;
 				continue;
 			}
