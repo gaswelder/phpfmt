@@ -9,28 +9,36 @@ function usage()
 {
 	fwrite(STDERR, "Usage: phpfmt [-r] [files...]\n");
 	fwrite(STDERR, "	-r	recurse into directories\n");
+	fwrite(STDERR, "	-p	print names of changed files\n");
 }
 
 function main($args)
 {
 	$recursive = false;
+	$print_names = false;
 
 	array_shift($args);
 	while(!empty($args)) {
-		if($args[0][0] != '-' || strlen($args[0]) != 2) {
+		if($args[0][0] != '-') {
 			break;
 		}
 
-		$flag = array_shift($args);
+		$flags = array_shift($args);
+		$flags = str_split(substr($flags, 1));
 
-		switch($flag) {
-			case "-r":
-				$recursive = true;
-				break;
-			default:
-				fwrite(STDERR, "Unknown flag: $flag\n");
-				usage();
-				exit(1);
+		foreach($flags as $flag) {
+			switch($flag) {
+				case 'r':
+					$recursive = true;
+					break;
+				case 'p':
+					$print_names = true;
+					break;
+				default:
+					fwrite(STDERR, "Unknown flag: $flag\n");
+					usage();
+					exit(1);
+			}
 		}
 	}
 
@@ -38,7 +46,7 @@ function main($args)
 		fmt_stdin();
 	}
 	else {
-		fmt_files($args, $recursive);
+		fmt_files($args, $recursive, $print_names);
 	}
 }
 
@@ -54,7 +62,7 @@ function fmt_stdin()
 	echo $src;
 }
 
-function fmt_files($list, $recursive)
+function fmt_files($list, $recursive, $print_names)
 {
 	foreach($list as $path) {
 		if(!file_exists($path)) {
@@ -63,8 +71,12 @@ function fmt_files($list, $recursive)
 		}
 		if(is_file($path)) {
 			$src = file_get_contents($path);
-			$src = fmt::format($src);
-			file_put_contents($path, $src);
+			$fmt = fmt::format($src);
+			if($fmt == $src) continue;
+			if($print_names) {
+				echo $path, "\n";
+			}
+			file_put_contents($path, $fmt);
 			continue;
 		}
 		if(!is_dir($path)) {
@@ -73,9 +85,25 @@ function fmt_files($list, $recursive)
 		}
 		if(!$recursive) continue;
 
-		$list = glob("$path/*.php");
-		fmt_files($list, $recursive);
+		$sublist = ls($path);
+		fmt_files($sublist, $recursive, $print_names);
 	}
+}
+
+function ls($dir) {
+	$list = array();
+	$d = opendir($dir);
+	while(1) {
+		$name = readdir($d);
+		if($name === false) break;
+		if($name[0] == '.') continue;
+		$path = "$dir/$name";
+		if(is_dir($path) || substr($name, -4) == '.php') {
+			$list[] = $path;
+		}
+	}
+	closedir($d);
+	return $list;
 }
 
 
