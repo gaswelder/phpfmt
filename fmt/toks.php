@@ -26,24 +26,20 @@ class toks
 			return array_pop($this->buf);
 		}
 
-		$space = "";
-		while(!empty($this->s)) {
-			$p = $this->s[0];
-			if(!$p || !is_array($p) || $p[0] != T_WHITESPACE) {
-				break;
-			}
-			$space .= $p[1];
-			$this->gettok();
-		}
-
-		$t = $this->gettok();
+		$t = $this->pop();
 		if(!$t) return null;
 
-		$t['lspace'] = $space;
+		$vskip = 0;
+		if($t[0] == T_WHITESPACE) {
+			$vskip = substr_count($t[1], "\n") - 1;
+			if($vskip < 0) $vskip = 0;
+			$t = $this->pop();
+		}
+		$t['vskip'] = $vskip;
 		return $t;
 	}
 
-	private function gettok()
+	private function pop()
 	{
 		$tok = array_shift($this->s);
 		if(!$tok) {

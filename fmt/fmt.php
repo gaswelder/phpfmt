@@ -121,12 +121,9 @@ class fmt
 				break;
 		}
 
-		if(out::emptyline()) {
-			if(substr_count($tok['lspace'], "\n") > 1) {
-				out::vskip();
-			}
+		if(out::emptyline() && $tok['vskip'] > 0) {
+			out::vskip();
 		}
-
 		out::str($tok[1]);
 
 		switch($tok[0])
@@ -292,7 +289,7 @@ class fmt
 
 	private static function fcontrol($t, toks $s)
 	{
-		out::str($t[1].' ');
+		self::out($t, $s);
 		/*
 		 * Add a space after the condition
 		 */

@@ -56,7 +56,9 @@ class out
 	static function str($s)
 	{
 		if(self::$emptyline) {
-			echo str_repeat("\t", self::$indent);
+			if(self::$indent > 0) {
+				echo str_repeat("\t", self::$indent);
+			}
 			self::$emptyline = false;
 			self::$emptylines = 0;
 		}
