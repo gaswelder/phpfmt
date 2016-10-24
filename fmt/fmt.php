@@ -66,7 +66,29 @@ class fmt
 
 	private static function out($tok, toks $s)
 	{
-		$ops = array(
+		/*
+		 * Line-breakers
+		 */
+		$breaks = array('.');
+		if(out::linelen() > 60 && in_array($tok[1], $breaks)) {
+			out::nl();
+			out::$indent++;
+			out::str($tok[1]);
+			out::$indent--;
+			return;
+		}
+		$breaks = array(',');
+		if(out::linelen() > 60 && in_array($tok[1], $breaks)) {
+			out::str($tok[1]);
+			out::nl();
+			out::str("\t");
+			return;
+		}
+
+		/*
+		 * Separate by space from both sides
+		 */
+		$lrspace = array(
 			'=', '==', '===', '!=', '!==',
 			'<', '>', '<=', '>=',
 			'+', '-', '*', '/', '%',
@@ -74,8 +96,7 @@ class fmt
 			'=>',
 			'||', '&&'
 		);
-
-		if(in_array($tok[1], $ops)) {
+		if(in_array($tok[1], $lrspace)) {
 			out::str(' '.$tok[1].' ');
 			return;
 		}

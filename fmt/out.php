@@ -11,6 +11,8 @@ class out
 	 * Number of empty lines above the current line
 	 */
 	private static $emptylines = 0;
+	
+	private static $linelen = 0;
 
 	static function emptyline() {
 		return self::$emptyline;
@@ -26,6 +28,7 @@ class out
 		}
 		echo "\n";
 		self::$emptyline = true;
+		self::$linelen = 0;
 	}
 
 	/*
@@ -43,6 +46,11 @@ class out
 		echo "\n";
 		self::$emptylines++;
 		self::$emptyline = true;
+		self::$linelen = 0;
+	}
+	
+	static function linelen() {
+		return self::$linelen;
 	}
 
 	static function str($s)
@@ -52,6 +60,7 @@ class out
 			self::$emptyline = false;
 			self::$emptylines = 0;
 		}
+		self::$linelen += mb_strlen($s);
 		echo $s;
 	}
 }
