@@ -75,13 +75,15 @@ class fmt
 		}
 	}
 
+	const LINELEN = 70;
+
 	private static function out($tok, toks $s)
 	{
 		/*
 		 * Line-breakers
 		 */
 		$breaks = array('.');
-		if(out::linelen() > 60 && in_array($tok[1], $breaks)) {
+		if(out::linelen() > self::LINELEN && in_array($tok[1], $breaks)) {
 			out::nl();
 			out::$indent++;
 			out::str($tok[1]);
@@ -89,7 +91,7 @@ class fmt
 			return;
 		}
 		$breaks = array(',');
-		if(out::linelen() > 60 && in_array($tok[1], $breaks)) {
+		if(out::linelen() > self::LINELEN && in_array($tok[1], $breaks)) {
 			out::str($tok[1]);
 			out::nl();
 			out::str("\t");

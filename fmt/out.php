@@ -50,7 +50,7 @@ class out
 	}
 
 	static function linelen() {
-		return self::$linelen;
+		return self::$linelen + self::$indent * 4;
 	}
 
 	static function str($s)
