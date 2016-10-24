@@ -45,6 +45,12 @@ class fmt
 				case T_CLASS:
 					self::fclass($s);
 					break;
+				case T_OPEN_TAG_WITH_ECHO:
+					self::out($t, $s);
+					out::str(' ');
+					self::out_until($s, T_CLOSE_TAG);
+					out::str(' ');
+					break;
 				default:
 					self::out($t, $s);
 			}
