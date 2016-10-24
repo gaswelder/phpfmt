@@ -25,6 +25,13 @@ class fmt
 		{
 			switch($t[0])
 			{
+				case T_OPEN_TAG:
+					$last_char = substr($t[1], -1);
+					out::str(trim($t[1]));
+					if($last_char == "\n") {
+						out::nl();
+					}
+					break;
 				case T_IF:
 				case T_FOREACH:
 				case T_WHILE:
