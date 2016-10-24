@@ -3,6 +3,13 @@ require "fmt/fmt.php";
 require "fmt/out.php";
 require "fmt/toks.php";
 
+error_reporting(-1);
+
+set_error_handler(function($errno, $errstr, $file, $line) {
+	fwrite(STDERR, "$errstr at $file:$line\n");
+	exit(1);
+});
+
 main($argv);
 
 function usage()
