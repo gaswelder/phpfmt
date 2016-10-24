@@ -47,10 +47,8 @@ class fmt
 					self::farr($s);
 					break;
 				case T_FUNCTION:
-					self::ffunc($s);
-					break;
 				case T_CLASS:
-					self::fclass($s);
+					self::fobj($t, $s);
 					break;
 				case T_OPEN_TAG_WITH_ECHO:
 					self::out($t, $s);
@@ -323,13 +321,6 @@ class fmt
 		}
 	}
 
-	private static function fclass(toks $s)
-	{
-		out::str('class ');
-		self::out_until($s, '{');
-		out::nl();
-	}
-
 	private static function fcontrol($t, toks $s)
 	{
 		self::out($t, $s);
@@ -360,9 +351,12 @@ class fmt
 		out::str(' ');
 	}
 
-	private static function ffunc(toks $s)
+	/*
+	 * Formats function or class
+	 */
+	private static function fobj($t, toks $s)
 	{
-		out::str('function ');
+		self::out($t, $s);
 		/*
 		 * Put opening brace on new line
 		 */
