@@ -11,7 +11,7 @@ class out
 	 * Number of empty lines above the current line
 	 */
 	private static $emptylines = 0;
-	
+
 	private static $linelen = 0;
 
 	static function emptyline() {
@@ -48,7 +48,7 @@ class out
 		self::$emptyline = true;
 		self::$linelen = 0;
 	}
-	
+
 	static function linelen() {
 		return self::$linelen;
 	}

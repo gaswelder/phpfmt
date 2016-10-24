@@ -94,7 +94,9 @@ class fmt
 			'+', '-', '*', '/', '%',
 			'+=', '-=', '*=', '%=', '.=',
 			'=>',
-			'||', '&&'
+			'||', '&&',
+			'?', ':',
+			"as", "instanceof"
 		);
 		if(in_array($tok[1], $lrspace)) {
 			out::str(' '.$tok[1].' ');
@@ -108,10 +110,6 @@ class fmt
 				out::str('}');
 				out::nl();
 				return;
-			case T_AS:
-			case T_INSTANCEOF:
-				out::str(' ');
-				break;
 			case T_COMMENT:
 				$tok[1] = trim($tok[1]);
 				break;
@@ -148,7 +146,6 @@ class fmt
 
 		$space_after = array(
 			T_ABSTRACT,
-			T_AS,
 			T_CATCH,
 			T_CLASS,
 			T_CLONE,
@@ -169,7 +166,6 @@ class fmt
 			T_IMPLEMENTS,
 			T_INCLUDE,
 			T_INCLUDE_ONCE,
-			T_INSTANCEOF,
 			T_INSTEADOF,
 			T_INTERFACE,
 			T_NAMESPACE,
