@@ -258,10 +258,22 @@ class fmt
 		out::$indent++;
 
 		$n = count($contents);
+		$level = 0;
 		while($n > 1) {
 			$t = array_shift($contents);
 			$n--;
-			if($t[0] == ',') {
+			/*
+			 * Keep track of braces so we don't break on
+			 * wrong commas.
+			 */
+			if($t[0] == '(') {
+				$level++;
+			}
+			else if($t[0] == ')') {
+				$level--;
+			}
+
+			if($level == 0 && $t[0] == ',') {
 				out::str(',');
 				out::nl();
 			}
