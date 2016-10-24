@@ -98,6 +98,13 @@ class fmt
 			return;
 		}
 
+		$ops = array( '-', '+', '/', '*' );
+		$p = $s->peek();
+		if(in_array($tok[0], $ops) && $p && $p[0] == T_LNUMBER) {
+			out::str($tok[0]);
+			return;
+		}
+
 		/*
 		 * Separate by space from both sides
 		 */
