@@ -14,6 +14,18 @@ class out
 
 	private static $linelen = 0;
 
+	private static $out = "";
+
+	static function flush() {
+		$s = self::$out;
+		self::$out = "";
+		self::$indent = 0;
+		self::$emptyline = true;
+		self::$emptylines = 0;
+		self::$linelen = 0;
+		return $s;
+	}
+
 	static function emptyline() {
 		return self::$emptyline;
 	}
@@ -26,7 +38,7 @@ class out
 		if(self::$emptyline) {
 			return;
 		}
-		echo "\n";
+		self::$out .= "\n";
 		self::$emptyline = true;
 		self::$linelen = 0;
 	}
@@ -43,7 +55,7 @@ class out
 		 */
 		if(self::$emptylines > 0) return;
 
-		echo "\n";
+		self::$out .= "\n";
 		self::$emptylines++;
 		self::$emptyline = true;
 		self::$linelen = 0;
@@ -57,13 +69,13 @@ class out
 	{
 		if(self::$emptyline) {
 			if(self::$indent > 0) {
-				echo str_repeat("\t", self::$indent);
+				self::$out .= str_repeat("\t", self::$indent);
 			}
 			self::$emptyline = false;
 			self::$emptylines = 0;
 		}
 		self::$linelen += mb_strlen($s);
-		echo $s;
+		self::$out .= $s;
 	}
 }
 

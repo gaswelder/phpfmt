@@ -5,9 +5,8 @@ class fmt
 	static function format($src)
 	{
 		$s = new toks($src);
-		ob_start();
 		self::subformat($s, null, null);
-		return ob_get_clean();
+		return out::flush();
 	}
 
 	static function subformat(toks $s, $begin, $end)
