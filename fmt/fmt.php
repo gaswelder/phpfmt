@@ -30,6 +30,9 @@ class fmt
 					if($last_char == "\n") {
 						out::nl();
 					}
+					else {
+						out::str(' ');
+					}
 					break;
 				case T_IF:
 				case T_FOREACH:
