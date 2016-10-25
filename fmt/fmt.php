@@ -378,16 +378,38 @@ class fmt
 		self::subformat($s, '(', ')');
 		out::str(' ');
 
-		$a = self::read_contents($s, '{', '}');
-		self::out(array_shift($a), $s);
+		$t = $s->get();
+		if(!$t || $t[0] != '{') {
+			trigger_error("'{' expected");
+			return;
+		}
+		self::out($t, $s);
 
+		$level = 1;
 		$case = false;
-		foreach($a as $t)
+		while($t = $s->get())
 		{
+			if($t[0] == '}') {
+				$level--;
+				if($level == 0) {
+					self::out($t, $s);
+					break;
+				}
+			}
+			else if($t[0] == '{') {
+				$level++;
+			}
+
 			if($t[0] == T_CASE) {
 				$case = true;
 				out::$indent--;
 				out::str('case ');
+				continue;
+			}
+			if($t[0] == T_DEFAULT) {
+				$case = true;
+				out::$indent--;
+				out::str('default');
 				continue;
 			}
 			if($case && $t[0] == ':') {
