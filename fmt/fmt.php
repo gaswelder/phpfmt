@@ -154,7 +154,7 @@ class fmt
 				break;
 		}
 
-		if(out::emptyline() && $tok['vskip'] > 0) {
+		if(out::emptyline() && $tok['lbreaks'] > 1) {
 			out::vskip();
 		}
 		out::str($tok[1]);

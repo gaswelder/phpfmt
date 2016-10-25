@@ -29,13 +29,20 @@ class toks
 		$t = $this->pop();
 		if(!$t) return null;
 
-		$vskip = 0;
+		/*
+		 * If this is whitespace, note how many line breaks
+		 * it has and get the next token.
+		 */
+		$lbreaks = 0;
 		if($t[0] == T_WHITESPACE) {
-			$vskip = substr_count($t[1], "\n") - 1;
-			if($vskip < 0) $vskip = 0;
+			$lbreaks = substr_count($t[1], "\n");
 			$t = $this->pop();
 		}
-		$t['vskip'] = $vskip;
+
+		/*
+		 * Mark the number of line breaks preceeded this token.
+		 */
+		$t['lbreaks'] = $lbreaks;
 		return $t;
 	}
 
