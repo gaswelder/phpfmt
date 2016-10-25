@@ -329,10 +329,7 @@ class fmt
 		/*
 		 * Add a space after the condition
 		 */
-		$a = self::read_contents($s, '(', ')');
-		foreach($a as $t) {
-			self::out($t, $s);
-		}
+		self::subformat($s, '(', ')');
 		out::str(' ');
 	}
 
