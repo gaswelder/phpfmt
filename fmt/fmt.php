@@ -47,7 +47,7 @@ class fmt
 				break;
 			case T_FUNCTION:
 				$p = $s->peek();
-				if ($p[0] == T_STRING){
+				if ($p[0] != '('){
 					self::fobj($t, $s);
 				}
 				else {
