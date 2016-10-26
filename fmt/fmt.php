@@ -181,6 +181,16 @@ class fmt
 			return;
 		}
 
+		if($tok[0] == T_STRING)
+		{
+			out::str($tok[1]);
+			$p = $s->peek();
+			if($p && $p[0] == T_VARIABLE) {
+				out::str(' ');
+			}
+			return;
+		}
+
 		out::str($tok[1]);
 
 		switch($tok[0])
