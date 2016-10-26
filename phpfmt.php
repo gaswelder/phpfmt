@@ -14,7 +14,7 @@ main($argv);
 
 function usage()
 {
-	fwrite(STDERR, "Usage: phpfmt [-r] [files...]\n");
+	fwrite(STDERR, "Usage: phpfmt [-rp] [files...]\n");
 	fwrite(STDERR, "	-r	recurse into directories\n");
 	fwrite(STDERR, "	-p	print names of changed files\n");
 }
