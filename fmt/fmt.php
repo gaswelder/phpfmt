@@ -290,7 +290,7 @@ class fmt
 			$len += mb_strlen($t[1]);
 		}
 
-		if($len < 50) {
+		if(out::linelen() + $len < 50) {
 			foreach($contents as $t) {
 				self::out($t, $s);
 			}
