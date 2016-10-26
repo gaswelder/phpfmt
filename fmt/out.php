@@ -30,6 +30,10 @@ class out
 		return self::$emptyline;
 	}
 
+	static function lastchar() {
+		return substr(self::$out, -1);
+	}
+
 	/*
 	 * Finish current line, if it's not empty.
 	 */
