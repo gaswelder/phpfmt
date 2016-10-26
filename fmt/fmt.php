@@ -46,6 +46,14 @@ class fmt
 				self::farr($s);
 				break;
 			case T_FUNCTION:
+				$p = $s->peek();
+				if ($p[0] == T_STRING){
+					self::fobj($t, $s);
+				}
+				else {
+					self::fanonfunc($t, $s);
+				}
+				break;
 			case T_CLASS:
 				self::fobj($t, $s);
 				break;
@@ -380,6 +388,28 @@ class fmt
 			}
 		}
 		out::str(' ');
+	}
+
+	/*
+	 * Formats anonymous function
+	 */
+	private static function fanonfunc($t, toks $s)
+	{
+		self::out($t, $s);
+		self::out_until($s, '{');
+		out::str(' ');
+		self::out($s->get(), $s);
+		$level = 1;
+		while ($t = $s->get()) {
+			if ($t[0] == '{') $level++;
+			if ($t[0] == '}') {
+				$level--;
+				if ($level == 0) break;
+			}
+			self::out($t, $s);
+		}
+		out::$indent--;
+		out::str('}');
 	}
 
 	/*
