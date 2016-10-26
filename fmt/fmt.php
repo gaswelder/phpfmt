@@ -149,21 +149,33 @@ class fmt
 				out::str('}');
 				out::nl();
 				return;
-			case T_COMMENT:
-				$tok[1] = trim($tok[1]);
-				break;
 		}
 
 		if(out::emptyline() && $tok['lbreaks'] > 1) {
 			out::vskip();
 		}
+
+		if($tok[0] == T_COMMENT || $tok[0] == T_DOC_COMMENT)
+		{
+			if($tok['lbreaks'] > 0) {
+				out::nl();
+			}
+			out::str(trim($tok[1]));
+			if(substr($tok[1], -1) == "\n") {
+				out::nl();
+			}
+
+			$p = $s->peek();
+			if($p && $p['lbreaks'] > 0) {
+				out::nl();
+			}
+			return;
+		}
+
 		out::str($tok[1]);
 
 		switch($tok[0])
 		{
-			case T_COMMENT:
-				out::nl();
-				break;
 			case ';':
 				out::nl();
 				break;
