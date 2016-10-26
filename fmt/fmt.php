@@ -1,5 +1,4 @@
 <?php
-
 class fmt
 {
 	static function format($src)
@@ -12,65 +11,63 @@ class fmt
 	static function subformat(toks $s, $begin, $end)
 	{
 		$t = $s->peek();
-		if($begin) {
-			if(!$t || $t[0] != $begin) return;
+		if ($begin) {
+			if (!$t || $t[0] != $begin) return;
 		}
 
 		$t = $s->get();
 		self::out($t, $s);
 
 		$level = 1;
-		while($t = $s->get())
-		{
-			switch($t[0])
-			{
-				case T_OPEN_TAG:
-					$last_char = substr($t[1], -1);
-					out::str(trim($t[1]));
-					if($last_char == "\n") {
-						out::nl();
-					}
-					else {
-						out::str(' ');
-					}
-					break;
-				case T_IF:
-				case T_FOREACH:
-				case T_WHILE:
-					self::fcontrol($t, $s);
-					break;
-				case T_FOR:
-					self::ffor($s);
-					break;
-				case T_SWITCH:
-					self::fswitch($s);
-					break;
-				case T_ARRAY:
-					self::farr($s);
-					break;
-				case T_FUNCTION:
-				case T_CLASS:
-					self::fobj($t, $s);
-					break;
-				case T_OPEN_TAG_WITH_ECHO:
-					self::out($t, $s);
+		while ($t = $s->get()) {
+			switch ($t[0]) {
+			case T_OPEN_TAG:
+				$last_char = substr($t[1], -1);
+				out::str(trim($t[1]));
+				if ($last_char == "\n"){
+					out::nl();
+				}
+				else {
 					out::str(' ');
-					self::out_until($s, T_CLOSE_TAG);
-					out::str(' ');
-					break;
-				default:
-					self::out($t, $s);
+				}
+				break;
+			case T_IF:
+			case T_FOREACH:
+			case T_WHILE:
+				self::fcontrol($t, $s);
+				break;
+			case T_FOR:
+				self::ffor($s);
+				break;
+			case T_SWITCH:
+				self::fswitch($s);
+				break;
+			case T_ARRAY:
+				self::farr($s);
+				break;
+			case T_FUNCTION:
+			case T_CLASS:
+				self::fobj($t, $s);
+				break;
+			case T_OPEN_TAG_WITH_ECHO:
+				self::out($t, $s);
+				out::str(' ');
+				self::out_until($s, T_CLOSE_TAG);
+				out::str(' ');
+				break;
+			default:
+				self::out($t, $s);
 			}
 
-			if(!$begin) continue;
+			if (!$begin) continue;
 
-			if($t[0] == $begin) {
+			if ($t[0] == $begin) {
 				$level++;
 				continue;
 			}
-			if($t[0] == $end) {
+			if ($t[0] == $end) {
 				$level--;
-				if($level == 0) {
+				if ($level == 0) {
 					break;
 				}
 			}
@@ -85,7 +82,7 @@ class fmt
 		 * Line-breakers
 		 */
 		$breaks = array('.');
-		if(out::linelen() > self::LINELEN && in_array($tok[1], $breaks)) {
+		if (out::linelen() > self::LINELEN && in_array($tok[1], $breaks)) {
 			out::nl();
 			out::$indent++;
 			out::str($tok[1]);
@@ -93,16 +90,16 @@ class fmt
 			return;
 		}
 		$breaks = array(',');
-		if(out::linelen() > self::LINELEN && in_array($tok[1], $breaks)) {
+		if (out::linelen() > self::LINELEN && in_array($tok[1], $breaks)) {
 			out::str($tok[1]);
 			out::nl();
 			out::str("\t");
 			return;
 		}
 
-		$ops = array( '-', '+', '/', '*' );
+		$ops = array('-', '+', '/', '*');
 		$p = $s->peek();
-		if(in_array($tok[0], $ops) && $p && $p[0] == T_LNUMBER) {
+		if (in_array($tok[0], $ops) && $p && $p[0] == T_LNUMBER) {
 			out::str($tok[0]);
 			return;
 		}
@@ -111,7 +108,7 @@ class fmt
 		 * Don't add space around minus in cases like
 		 * '$a = -strlen($b)'
 		 */
-		if($tok[0] == '-' && out::lastchar() == ' ') {
+		if ($tok[0] == '-' && out::lastchar() == ' ') {
 			out::str($tok[0]);
 			return;
 		}
@@ -144,71 +141,74 @@ class fmt
 			T_SR,
 			T_SR_EQUAL,
 			T_XOR_EQUAL,
-			'=', '<', '>', '+', '-', '*', '/', '%', '?', ':'
+			'=',
+			'<',
+			'>',
+			'+',
+			'-',
+			'*',
+			'/',
+			'%',
+			'?',
+			':'
 		);
-		if(in_array($tok[0], $lrspace)) {
+		if (in_array($tok[0], $lrspace)) {
 			out::str(' '.$tok[1].' ');
 			return;
 		}
-
-		switch($tok[0])
-		{
-			case '}':
-				out::$indent--;
-				out::str('}');
-				out::nl();
-				return;
+		switch ($tok[0]) {
+		case '}':
+			out::$indent--;
+			out::str('}');
+			out::nl();
+			return;
 		}
 
-		if(out::emptyline() && $tok['lbreaks'] > 1) {
+		if (out::emptyline() && $tok['lbreaks'] > 1) {
 			out::vskip();
 		}
 
-		if($tok[0] == T_COMMENT || $tok[0] == T_DOC_COMMENT)
-		{
-			if($tok['lbreaks'] > 0) {
+		if ($tok[0] == T_COMMENT || $tok[0] == T_DOC_COMMENT) {
+			if ($tok['lbreaks'] > 0) {
 				out::nl();
 			}
 			out::str(trim($tok[1]));
-			if(substr($tok[1], -1) == "\n") {
+			if (substr($tok[1], -1) == "\n") {
 				out::nl();
 			}
 
 			$p = $s->peek();
-			if($p && $p['lbreaks'] > 0) {
+			if ($p && $p['lbreaks'] > 0) {
 				out::nl();
 			}
 			return;
 		}
 
-		if($tok[0] == T_STRING)
-		{
+		if ($tok[0] == T_STRING) {
 			out::str($tok[1]);
 			$p = $s->peek();
-			if($p && $p[0] == T_VARIABLE) {
+			if ($p && $p[0] == T_VARIABLE) {
 				out::str(' ');
 			}
 			return;
 		}
 
 		out::str($tok[1]);
-
-		switch($tok[0])
-		{
-			case ';':
-				out::nl();
-				break;
-			case '{':
-				out::nl();
-				out::$indent++;
-				break;
-			case T_RETURN:
-			case T_BREAK:
-				$t = $s->peek();
-				if($t && $t[0] != ';') {
-					out::str(' ');
-				}
-				break;
+		switch ($tok[0]) {
+		case ';':
+			out::nl();
+			break;
+		case '{':
+			out::nl();
+			out::$indent++;
+			break;
+		case T_RETURN:
+		case T_BREAK:
+			$t = $s->peek();
+			if ($t && $t[0] != ';'){
+				out::str(' ');
+			}
+			break;
 		}
 
 		$space_after = array(
@@ -254,7 +254,7 @@ class fmt
 			','
 		);
 
-		if(in_array($tok[0], $space_after)) {
+		if (in_array($tok[0], $space_after)) {
 			out::str(' ');
 		}
 	}
@@ -271,16 +271,15 @@ class fmt
 		$contents[] = $t;
 		$level = 1;
 
-		while($t = $s->get())
-		{
+		while ($t = $s->get()) {
 			$contents[] = $t;
-			if($t[0] == $begin) {
+			if ($t[0] == $begin) {
 				$level++;
 				continue;
 			}
-			if($t[0] == $end) {
+			if ($t[0] == $end) {
 				$level--;
-				if($level == 0) {
+				if ($level == 0) {
 					break;
 				}
 			}
@@ -296,12 +295,12 @@ class fmt
 		$contents = self::read_contents($s, '(', ')');
 
 		$len = 0;
-		foreach($contents as $t) {
+		foreach ($contents as $t) {
 			$len += mb_strlen($t[1]);
 		}
 
-		if(out::linelen() + $len < 50) {
-			foreach($contents as $t) {
+		if (out::linelen() + $len < 50) {
+			foreach ($contents as $t) {
 				self::out($t, $s);
 			}
 			return;
@@ -316,21 +315,21 @@ class fmt
 
 		$n = count($contents);
 		$level = 0;
-		while($n > 1) {
+		while ($n > 1) {
 			$t = array_shift($contents);
 			$n--;
 			/*
 			 * Keep track of braces so we don't break on
 			 * wrong commas.
 			 */
-			if($t[0] == '(') {
+			if ($t[0] == '(') {
 				$level++;
 			}
-			else if($t[0] == ')') {
+			else if ($t[0] == ')') {
 				$level--;
 			}
 
-			if($level == 0 && $t[0] == ',') {
+			if ($level == 0 && $t[0] == ',') {
 				out::str(',');
 				out::nl();
 			}
@@ -347,8 +346,8 @@ class fmt
 
 	private static function out_until(toks $s, $tokid)
 	{
-		while($t = $s->get()) {
-			if($t[0] == $tokid) {
+		while ($t = $s->get()) {
+			if ($t[0] == $tokid) {
 				$s->unget($t);
 				break;
 			}
@@ -371,13 +370,13 @@ class fmt
 		out::str('for ');
 
 		$a = self::read_contents($s, '(', ')');
-		foreach($a as $t) {
-			switch($t[0]) {
-				case ';':
-					out::str('; ');
-					break;
-				default:
-					self::out($t, $s);
+		foreach ($a as $t) {
+			switch ($t[0]) {
+			case ';':
+				out::str('; ');
+				break;
+			default:
+				self::out($t, $s);
 			}
 		}
 		out::str(' ');
@@ -400,7 +399,7 @@ class fmt
 		 */
 		self::subformat($s, '{', '}');
 		$t = $s->peek();
-		if(!$t || $t[0] != '}') {
+		if (!$t || $t[0] != '}') {
 			out::vskip();
 		}
 	}
@@ -412,7 +411,7 @@ class fmt
 		out::str(' ');
 
 		$t = $s->get();
-		if(!$t || $t[0] != '{') {
+		if (!$t || $t[0] != '{') {
 			trigger_error("'{' expected");
 			return;
 		}
@@ -420,32 +419,31 @@ class fmt
 
 		$level = 1;
 		$case = false;
-		while($t = $s->get())
-		{
-			if($t[0] == '}') {
+		while ($t = $s->get()) {
+			if ($t[0] == '}') {
 				$level--;
-				if($level == 0) {
+				if ($level == 0) {
 					self::out($t, $s);
 					break;
 				}
 			}
-			else if($t[0] == '{') {
+			else if ($t[0] == '{') {
 				$level++;
 			}
 
-			if($t[0] == T_CASE) {
+			if ($t[0] == T_CASE) {
 				$case = true;
 				out::$indent--;
 				out::str('case ');
 				continue;
 			}
-			if($t[0] == T_DEFAULT) {
+			if ($t[0] == T_DEFAULT) {
 				$case = true;
 				out::$indent--;
 				out::str('default');
 				continue;
 			}
-			if($case && $t[0] == ':') {
+			if ($case && $t[0] == ':') {
 				$case = false;
 				out::str(':');
 				out::nl();

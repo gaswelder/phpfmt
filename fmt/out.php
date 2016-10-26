@@ -1,5 +1,4 @@
 <?php
-
 class out
 {
 	static $indent = 0;
@@ -16,7 +15,8 @@ class out
 
 	private static $out = "";
 
-	static function flush() {
+	static function flush()
+	{
 		$s = self::$out;
 		self::$out = "";
 		self::$indent = 0;
@@ -26,11 +26,13 @@ class out
 		return $s;
 	}
 
-	static function emptyline() {
+	static function emptyline()
+	{
 		return self::$emptyline;
 	}
 
-	static function lastchar() {
+	static function lastchar()
+	{
 		return substr(self::$out, -1);
 	}
 
@@ -39,7 +41,7 @@ class out
 	 */
 	static function nl()
 	{
-		if(self::$emptyline) {
+		if (self::$emptyline) {
 			return;
 		}
 		self::$out .= "\n";
@@ -57,7 +59,7 @@ class out
 		 * If we have already an empty line above, don't add another
 		 * one.
 		 */
-		if(self::$emptylines > 0) return;
+		if (self::$emptylines > 0) return;
 
 		self::$out .= "\n";
 		self::$emptylines++;
@@ -65,14 +67,15 @@ class out
 		self::$linelen = 0;
 	}
 
-	static function linelen() {
-		return self::$linelen + self::$indent * 4;
+	static function linelen()
+	{
+		return self::$linelen + self::$indent*4;
 	}
 
 	static function str($s)
 	{
-		if(self::$emptyline) {
-			if(self::$indent > 0) {
+		if (self::$emptyline) {
+			if (self::$indent > 0) {
 				self::$out .= str_repeat("\t", self::$indent);
 			}
 			self::$emptyline = false;

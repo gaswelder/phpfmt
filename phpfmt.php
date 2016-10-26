@@ -5,10 +5,13 @@ require "fmt/toks.php";
 
 error_reporting(-1);
 
-set_error_handler(function($errno, $errstr, $file, $line) {
+set_error_handler(function ($errno, $errstr, $file, $line)
+{
 	fwrite(STDERR, "$errstr at $file:$line\n");
 	exit(1);
-});
+}
+
+);
 
 main($argv);
 
@@ -25,31 +28,31 @@ function main($args)
 	$print_names = false;
 
 	array_shift($args);
-	while(!empty($args)) {
-		if($args[0][0] != '-') {
+	while (!empty($args)) {
+		if ($args[0][0] != '-') {
 			break;
 		}
 
 		$flags = array_shift($args);
 		$flags = str_split(substr($flags, 1));
 
-		foreach($flags as $flag) {
-			switch($flag) {
-				case 'r':
-					$recursive = true;
-					break;
-				case 'p':
-					$print_names = true;
-					break;
-				default:
-					fwrite(STDERR, "Unknown flag: $flag\n");
-					usage();
-					exit(1);
+		foreach ($flags as $flag) {
+			switch ($flag) {
+			case 'r':
+				$recursive = true;
+				break;
+			case 'p':
+				$print_names = true;
+				break;
+			default:
+				fwrite(STDERR, "Unknown flag: $flag\n");
+				usage();
+				exit(1);
 			}
 		}
 	}
 
-	if(empty($args)) {
+	if (empty($args)) {
 		fmt_stdin();
 	}
 	else {
@@ -60,9 +63,9 @@ function main($args)
 function fmt_stdin()
 {
 	$src = "";
-	while(1) {
+	while (1) {
 		$line = fgets(STDIN);
-		if($line === false) break;
+		if ($line === false) break;
 		$src .= $line;
 	}
 	$src = fmt::format($src);
@@ -71,47 +74,47 @@ function fmt_stdin()
 
 function fmt_files($list, $recursive, $print_names)
 {
-	foreach($list as $path) {
-		if(!file_exists($path)) {
+	foreach ($list as $path) {
+		if (!file_exists($path)) {
 			fwrite(STDERR, "$path: no such file\n");
 			continue;
 		}
-		if(is_file($path)) {
+		if (is_file($path)) {
 			$src = file_get_contents($path);
 			$fmt = fmt::format($src);
-			if($fmt == $src) continue;
-			if($print_names) {
+			if ($fmt == $src) continue;
+			if ($print_names) {
 				echo $path, "\n";
 			}
 			file_put_contents($path, $fmt);
 			continue;
 		}
-		if(!is_dir($path)) {
+		if (!is_dir($path)) {
 			fwrite(STDERR, "$path: unknown file type\n");
 			continue;
 		}
-		if(!$recursive) continue;
+		if (!$recursive) continue;
 
 		$sublist = ls($path);
 		fmt_files($sublist, $recursive, $print_names);
 	}
 }
 
-function ls($dir) {
+function ls($dir)
+{
 	$list = array();
 	$d = opendir($dir);
-	while(1) {
+	while (1) {
 		$name = readdir($d);
-		if($name === false) break;
-		if($name[0] == '.') continue;
+		if ($name === false) break;
+		if ($name[0] == '.') continue;
 		$path = "$dir/$name";
-		if(is_dir($path) || substr($name, -4) == '.php') {
+		if (is_dir($path) || substr($name, -4) == '.php') {
 			$list[] = $path;
 		}
 	}
 	closedir($d);
 	return $list;
 }
-
 
 ?>
