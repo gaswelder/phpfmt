@@ -89,11 +89,15 @@ class fmt
 		/*
 		 * Line-breakers
 		 */
-		$breaks = array('.');
-		if (out::linelen() > self::LINELEN && in_array($tok[1], $breaks)) {
+		$breaks = array(
+			'.',
+			T_BOOLEAN_AND,
+			T_BOOLEAN_OR
+		);
+		if (out::linelen() > self::LINELEN && in_array($tok[0], $breaks)) {
 			out::nl();
 			out::$indent++;
-			out::str($tok[1]);
+			out::str($tok[1].' ');
 			out::$indent--;
 			return;
 		}
