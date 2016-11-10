@@ -305,12 +305,27 @@ class fmt
 		out::str('array');
 
 		$contents = self::read_contents($s, '(', ')');
+		/*
+		 * If the array is empty, don't bother with contents
+		 * formatting below.
+		 */
+		if (count($contents) == 2) {
+			out::str('()');
+			return;
+		}
 
+		/*
+		 * Find out how long the array contents are
+		 */
 		$len = 0;
 		foreach ($contents as $t) {
 			$len += mb_strlen($t[1]);
 		}
 
+		/*
+		 * If everything fits on one line, write it without
+		 * breaks.
+		 */
 		if (out::linelen() + $len < 50) {
 			foreach ($contents as $t) {
 				self::out($t, $s);
