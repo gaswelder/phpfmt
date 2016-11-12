@@ -49,6 +49,14 @@ function main($args)
 		}
 	}
 
+	/*
+	 * In recursive mode operate on current directory if
+	 * no paths given.
+	 */
+	if ($recursive && empty($args)) {
+		$args[] = '.';
+	}
+
 	if (empty($args)) {
 		fmt_stdin();
 	}

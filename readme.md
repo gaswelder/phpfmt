@@ -12,16 +12,19 @@ The usage is:
 
 	phpfmt [-rq] [paths...]
 
-If no paths are given, acts as a `stdin`-`stdout` filter. Otherwise
-processes each file from the `paths` list, formatting its contents
-in-place.
+If no paths are given, acts as a `stdin`-`stdout` filter (unless `-r`
+flag is given). Otherwise processes each file from the `paths` list,
+formatting its contents in-place.
 
 The `r` flag allows recursing into directories. Without it paths from
 the command line that point to directories will be ignored.
 
+If `r` flag is given without path arguments, current directory is
+processed recursively.
+
 The `q` flag tells phpfmt not to print paths of changed files.
 
-phpfmt doesn't take HTML code into account, so it's not suited for 
+phpfmt doesn't take HTML code into account, so it's not suited for
 dealing with web templates.
 
 
