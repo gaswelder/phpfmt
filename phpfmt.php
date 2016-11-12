@@ -14,15 +14,15 @@ main($argv);
 
 function usage()
 {
-	fwrite(STDERR, "Usage: phpfmt [-rp] [files...]\n");
+	fwrite(STDERR, "Usage: phpfmt [-rq] files...\n");
 	fwrite(STDERR, "	-r	recurse into directories\n");
-	fwrite(STDERR, "	-p	print names of changed files\n");
+	fwrite(STDERR, "	-q	don't print names of changed files\n");
 }
 
 function main($args)
 {
 	$recursive = false;
-	$print_names = false;
+	$print_names = true;
 
 	array_shift($args);
 	while (!empty($args)) {
@@ -38,8 +38,8 @@ function main($args)
 			case 'r':
 				$recursive = true;
 				break;
-			case 'p':
-				$print_names = true;
+			case 'q':
+				$print_names = false;
 				break;
 			default:
 				fwrite(STDERR, "Unknown flag: $flag\n");

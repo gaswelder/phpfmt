@@ -10,7 +10,7 @@ phpfmt formats PHP code into a style somewhat similar to the K&R style.
 
 The usage is:
 
-	phpfmt [-rp] [paths...]
+	phpfmt [-rq] [paths...]
 
 If no paths are given, acts as a `stdin`-`stdout` filter. Otherwise
 processes each file from the `paths` list, formatting its contents
@@ -19,7 +19,7 @@ in-place.
 The `r` flag allows recursing into directories. Without it paths from
 the command line that point to directories will be ignored.
 
-The `p` flag tells phpfmt to print paths of changed files.
+The `q` flag tells phpfmt not to print paths of changed files.
 
 phpfmt doesn't take HTML code into account, so it's not suited for 
 dealing with web templates.
